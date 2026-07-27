@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title> A Special Secret Is Waiting Just for You💌... </title>
+<title>A Special Secret Is Waiting Just for You💌...</title>
 <style>
 /* ============================================================
    BASE.CSS — Design tokens, resets, typography, shared layout
@@ -73,120 +73,282 @@ body {
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
 }
-    const y = Math.random() * window.innerHeight * 0.4 + window.innerHeight * 0.1;
-    const color = colors[Math.floor(Math.random() * colors.length)];
-    const count = 36;
-    for (let i = 0; i < count; i++) {
-      const angle = (i / count) * Math.PI * 2;
-      const speed = Math.random() * 3 + 2;
-      particles.push({
-        x, y,
-        vx: Math.cos(angle) * speed,
-        vy: Math.sin(angle) * speed,
-        life: 1,
-        decay: Math.random() * 0.012 + 0.012,
-        color,
-        size: Math.random() * 2 + 1.5
-      });
-    }
-  }
 
-  const start = performance.now();
-  let lastLaunch = 0;
-  function frame(now) {
-    const elapsed = now - start;
-    // Fully clear each frame (canvas background is transparent), then redraw
-    // particles. This avoids a dark fill compounding over time and blacking
-    // out the page underneath.
-    ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
-
-    if (now - lastLaunch > 500 && elapsed < duration - 600) {
-      launchFirework();
-      lastLaunch = now;
-    }
-
-    particles = particles.filter((p) => p.life > 0);
-    particles.forEach((p) => {
-      p.x += p.vx;
-      p.y += p.vy;
-      p.vy += 0.025;
-      p.life -= p.decay;
-      ctx.globalAlpha = Math.max(p.life, 0);
-      ctx.fillStyle = p.color;
-      ctx.beginPath();
-      ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-      ctx.fill();
-    });
-    ctx.globalAlpha = 1;
-
-    if (elapsed < duration) {
-      requestAnimationFrame(frame);
-    } else {
-      canvas.remove();
-    }
-  }
-  requestAnimationFrame(frame);
-  window.addEventListener('resize', resize);
+/* ---- Shared page shell ---- */
+.page {
+  position: relative;
+  min-height: 100vh;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-md);
+  overflow: hidden;
 }
 
-/* ---------------- SCROLL REVEAL ---------------- */
-function initScrollReveal() {
-  const items = document.querySelectorAll('.reveal');
-  if (!items.length) return;
-  const observer = new IntersectionObserver(
-    (entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('in-view');
-          observer.unobserve(entry.target);
-        }
-      });
-    },
-    { threshold: 0.15 }
-  );
-  items.forEach((item) => observer.observe(item));
+/* Canvas layer for particles (hearts/stars/balloons) sits behind all content */
+#particle-canvas {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  pointer-events: none;
 }
-</script>
-<script>
-  initParticles({ hearts: true, stars: true, balloons: false, density: 0.8 });
 
-  const display = document.getElementById('countdown-display');
-  const caption = document.getElementById('countdown-caption');
-  const continueBtn = document.getElementById('continue-btn');
-  const captions = ['Get ready...', 'Almost there...', 'Here it comes...'];
-  let count = 3;
+.content-layer {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
 
-  function tick() {
-    display.textContent = count;
-    caption.textContent = captions[3 - count] || '';
-    display.classList.remove('pop');
-    void display.offsetWidth; // restart animation
-    display.classList.add('pop');
+/* ---- Headings ---- */
+h1, h2, h3 { font-family: var(--font-display); font-weight: 700; }
 
-    if (count > 1) {
-      count -= 1;
-      setTimeout(tick, 1100);
-    } else {
-      setTimeout(showFinalMessage, 1100);
-    }
+.eyebrow {
+  font-family: var(--font-body);
+  letter-spacing: 0.35em;
+  text-transform: uppercase;
+  font-size: 0.7rem;
+  color: var(--gold-soft);
+  opacity: 0.85;
+}
+
+.gradient-text {
+  background: var(--grad-aurora);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.gold-text {
+  background: var(--grad-gold);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* ---- Glassmorphism card ---- */
+.glass-card {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  border-radius: 24px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255,255,255,0.1);
+}
+
+/* ---- Premium button ---- */
+.btn-premium {
+  position: relative;
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 1rem;
+  letter-spacing: 0.04em;
+  color: var(--midnight-deep);
+  background: var(--grad-gold);
+  border: none;
+  padding: 1rem 2.5rem;
+  border-radius: 50px;
+  cursor: pointer;
+  overflow: hidden;
+  box-shadow: 0 6px 24px rgba(255, 209, 102, 0.35), 0 2px 8px rgba(0,0,0,0.25);
+  transition: transform var(--t-fast) var(--ease-soft), box-shadow var(--t-fast) var(--ease-soft);
+}
+.btn-premium:hover {
+  transform: translateY(-3px) scale(1.03);
+  box-shadow: 0 12px 32px rgba(255, 209, 102, 0.5), 0 4px 12px rgba(0,0,0,0.3);
+}
+.btn-premium:active { transform: translateY(-1px) scale(0.99); }
+
+.btn-premium::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(120deg, transparent 30%, rgba(255,255,255,0.6) 50%, transparent 70%);
+  transform: translateX(-100%);
+  transition: transform 0.8s ease;
+}
+.btn-premium:hover::before { transform: translateX(100%); }
+
+.btn-ghost {
+  font-family: var(--font-body);
+  font-weight: 500;
+  color: var(--white);
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  backdrop-filter: blur(10px);
+  padding: 0.9rem 2.2rem;
+  border-radius: 50px;
+  cursor: pointer;
+  transition: all var(--t-fast) var(--ease-soft);
+}
+.btn-ghost:hover {
+  background: rgba(255,255,255,0.15);
+  transform: translateY(-2px);
+}
+
+/* ---- Page transition overlay ---- */
+.page-transition-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: var(--grad-bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  opacity: 0;
+}
+.page-transition-overlay.active {
+  pointer-events: all;
+  animation: fadeInOverlay var(--t-mid) var(--ease-soft) forwards;
+}
+.page-transition-overlay .loader-heart {
+  font-size: 2.5rem;
+  animation: pulseHeart 1s ease-in-out infinite;
+}
+@keyframes fadeInOverlay { from { opacity: 0; } to { opacity: 1; } }
+@keyframes pulseHeart { 0%,100% { transform: scale(1); } 50% { transform: scale(1.3); } }
+
+body.page-enter { animation: pageEnter var(--t-slow) var(--ease-soft) backwards; }
+@keyframes pageEnter {
+  from { opacity: 0; transform: scale(1.02); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+/* ---- Nav dots (progress indicator across the journey) ---- */
+.journey-nav {
+  position: fixed;
+  bottom: var(--space-sm);
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 0.5rem;
+  z-index: 50;
+  padding: 0.5rem 1rem;
+  border-radius: 50px;
+  background: rgba(0,0,0,0.2);
+  backdrop-filter: blur(8px);
+}
+.journey-nav .dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.25);
+  transition: all var(--t-fast) var(--ease-soft);
+}
+.journey-nav .dot.active {
+  background: var(--gold);
+  width: 22px;
+  border-radius: 4px;
+  box-shadow: 0 0 8px var(--gold);
+}
+
+/* ---- Music toggle ---- */
+.music-toggle {
+  position: fixed;
+  top: var(--space-sm);
+  right: var(--space-sm);
+  z-index: 60;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  backdrop-filter: blur(10px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 1.2rem;
+  transition: transform var(--t-fast) var(--ease-soft);
+}
+.music-toggle:hover { transform: scale(1.1); }
+.music-toggle.muted { opacity: 0.5; }
+.music-toggle .bar { display:inline-flex; gap:2px; align-items:flex-end; height:14px; }
+.music-toggle .bar span {
+  width: 3px; background: var(--gold); border-radius: 2px;
+  animation: musicBars 0.8s ease-in-out infinite;
+}
+.music-toggle.muted .bar span { animation-play-state: paused; height: 4px !important; }
+.music-toggle .bar span:nth-child(1) { animation-delay: 0s; }
+.music-toggle .bar span:nth-child(2) { animation-delay: 0.2s; }
+.music-toggle .bar span:nth-child(3) { animation-delay: 0.4s; }
+@keyframes musicBars {
+  0%, 100% { height: 4px; }
+  50% { height: 14px; }
+}
+
+/* ---- Back link ---- */
+.back-link {
+  position: fixed;
+  top: var(--space-sm);
+  left: var(--space-sm);
+  z-index: 60;
+  color: var(--white-dim);
+  text-decoration: none;
+  font-size: 0.85rem;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.6rem 1.1rem;
+  border-radius: 50px;
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  backdrop-filter: blur(10px);
+  transition: all var(--t-fast) var(--ease-soft);
+}
+.back-link:hover { color: var(--gold); transform: translateX(-2px); }
+
+/* ---- Scroll reveal helper ---- */
+.reveal {
+  opacity: 0;
+  transform: translateY(40px);
+  transition: opacity 0.9s var(--ease-soft), transform 0.9s var(--ease-soft);
+}
+.reveal.in-view { opacity: 1; transform: translateY(0); }
+
+/* ---- Utility ---- */
+.text-center { text-align: center; }
+.mt-sm { margin-top: var(--space-sm); }
+.mt-md { margin-top: var(--space-md); }
+.mt-lg { margin-top: var(--space-lg); }
+
+::selection { background: var(--pink); color: var(--white); }
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: var(--midnight-deep); }
+::-webkit-scrollbar-thumb { background: var(--purple); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: var(--pink); }
+
+/* ---- Reduced motion ---- */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
+}
 
-  function showFinalMessage() {
-    display.textContent = '🎉';
-    display.classList.add('pop');
-    caption.textContent = 'It\'s time!';
-    confettiBurst({ duration: 2600, count: 150 });
-    continueBtn.style.display = 'inline-flex';
-    continueBtn.classList.add('btn-reveal');
-  }
-
-  setTimeout(tick, 600);
-
-  continueBtn.addEventListener('click', () => goToPage('wish.html'));
-</script>
-</body>
-</html>
-/* ============================================================
+/* ---- Responsive base ---- */
+@media (max-width: 768px) {
+  :root { --space-xl: 4rem; --space-lg: 2.5rem; }
+  .btn-premium, .btn-ghost { padding: 0.85rem 1.8rem; font-size: 0.9rem; }
+}
+   body{
+    margin:0;
+    font-family:Arial,sans-serif;
+}
+</style>
+<style>
+   /* ============================================================
    COUNTDOWN.CSS — Page 2 specific styles
    ============================================================ */
 
@@ -289,7 +451,48 @@ function initScrollReveal() {
   .countdown-wrap { width: 200px; height: 200px; }
   .countdown-number { font-size: 4rem; }
 }
-/* ============================================================
+</stlye>
+</head>
+<body>
+
+<canvas id="particle-canvas"></canvas>
+
+<audio id="bg-music" loop preload="none">
+  <source src="assets/music/birthday-song.mp3" type="audio/mpeg" />
+</audio>
+
+<a href="index.html" class="back-link">← Back</a>
+<button class="music-toggle"><span class="bar"><span></span><span></span><span></span></span></button>
+
+<main class="page countdown-page">
+  <div class="content-layer">
+
+    <p class="eyebrow">Just A Moment</p>
+    <h1 class="countdown-heading">
+      <span class="gradient-text">Someone Has Something</span>
+      <br />
+      Special to Tell You<span class="dots">...</span>
+    </h1>
+
+    <!-- Animated countdown numbers -->
+    <div class="countdown-wrap glass-card">
+      <div class="countdown-number" id="countdown-display">3</div>
+      <p class="countdown-caption" id="countdown-caption">Get ready...</p>
+    </div>
+
+    <button id="continue-btn" class="btn-premium continue-btn" style="display:none;">
+      <span>Continue</span> <span>→</span>
+    </button>
+
+  </div>
+</main>
+
+<canvas id="confetti-layer"></canvas>
+
+<div class="journey-nav"></div>
+
+<script>
+   /* ============================================================
    PARTICLES.JS — Shared ambient canvas background
    Renders floating hearts, twinkling stars, and drifting balloons.
    Used on every page via #particle-canvas for visual consistency.
@@ -491,7 +694,9 @@ function initScrollReveal() {
   global.initParticles = initParticles;
   global.PARTICLE_COLORS = COLORS;
 })(window);
-/* ============================================================
+</script>
+<script>
+  /* ============================================================
    MAIN.JS — Shared utilities used across every page
    - Page transition navigation
    - Background music control (persists choice via sessionStorage)
@@ -770,3 +975,44 @@ function initScrollReveal() {
   );
   items.forEach((item) => observer.observe(item));
 }
+     
+</script>
+<script>
+  initParticles({ hearts: true, stars: true, balloons: false, density: 0.8 });
+
+  const display = document.getElementById('countdown-display');
+  const caption = document.getElementById('countdown-caption');
+  const continueBtn = document.getElementById('continue-btn');
+  const captions = ['Get ready...', 'Almost there...', 'Here it comes...'];
+  let count = 3;
+
+  function tick() {
+    display.textContent = count;
+    caption.textContent = captions[3 - count] || '';
+    display.classList.remove('pop');
+    void display.offsetWidth; // restart animation
+    display.classList.add('pop');
+
+    if (count > 1) {
+      count -= 1;
+      setTimeout(tick, 1100);
+    } else {
+      setTimeout(showFinalMessage, 1100);
+    }
+  }
+
+  function showFinalMessage() {
+    display.textContent = '🎉';
+    display.classList.add('pop');
+    caption.textContent = 'It\'s time!';
+    confettiBurst({ duration: 2600, count: 150 });
+    continueBtn.style.display = 'inline-flex';
+    continueBtn.classList.add('btn-reveal');
+  }
+
+  setTimeout(tick, 600);
+
+  continueBtn.addEventListener('click', () => goToPage('wish.html'));
+</script>
+</body>
+</html>
