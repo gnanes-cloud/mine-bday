@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title> A Special Secret Is Waiting Just for You💌... </title>
+<style>
+/* ============================================================
+   BASE.CSS — Design tokens, resets, typography, shared layout
+   Premium Birthday Wish Website
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;0,800;0,900;1,600&family=Poppins:wght@300;400;500;600;700&family=Great+Vibes&display=swap');
+
+:root {
+  /* ---- Color tokens ---- */
+  --midnight: #1a0b2e;
+  --midnight-deep: #120821;
+  --plum: #2d1450;
+  --purple: #9b5de5;
+  --purple-soft: #b794f6;
+  --pink: #ff5fa8;
+  --pink-soft: #ffb3d1;
+  --gold: #ffd166;
+  --gold-soft: #ffe8b3;
+  --blue: #4cc9f0;
+  --blue-soft: #a8e6ff;
+  --white: #fffaf5;
+  --white-dim: rgba(255, 250, 245, 0.7);
+
+  /* ---- Gradients ---- */
+  --grad-bg: radial-gradient(ellipse at 20% 20%, #2d1450 0%, #1a0b2e 45%, #120821 100%);
+  --grad-aurora: linear-gradient(135deg, var(--pink) 0%, var(--purple) 50%, var(--blue) 100%);
+  --grad-gold: linear-gradient(135deg, #ffe8b3 0%, #ffd166 50%, #f5a623 100%);
+  --grad-glass: linear-gradient(135deg, rgba(255,255,255,0.12) 0%, rgba(255,255,255,0.04) 100%);
+
+  /* ---- Glass ---- */
+  --glass-bg: rgba(255, 255, 255, 0.07);
+  --glass-border: rgba(255, 255, 255, 0.18);
+  --glass-blur: 18px;
+
+  /* ---- Typography ---- */
+  --font-display: 'Playfair Display', Georgia, serif;
+  --font-script: 'Great Vibes', cursive;
+  --font-body: 'Poppins', -apple-system, sans-serif;
+
+  /* ---- Motion ---- */
+  --ease-soft: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-bounce: cubic-bezier(0.68, -0.55, 0.27, 1.55);
+  --t-fast: 0.3s;
+  --t-mid: 0.6s;
+  --t-slow: 1.2s;
+
+  /* ---- Spacing scale ---- */
+  --space-xs: 0.5rem;
+  --space-sm: 1rem;
+  --space-md: 2rem;
+  --space-lg: 3.5rem;
+  --space-xl: 6rem;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: var(--font-body);
+  background: var(--grad-bg);
+  color: var(--white);
+  min-height: 100vh;
+  overflow-x: hidden;
+  position: relative;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+    const y = Math.random() * window.innerHeight * 0.4 + window.innerHeight * 0.1;
+    const color = colors[Math.floor(Math.random() * colors.length)];
+    const count = 36;
+    for (let i = 0; i < count; i++) {
+      const angle = (i / count) * Math.PI * 2;
+      const speed = Math.random() * 3 + 2;
+      particles.push({
+        x, y,
+        vx: Math.cos(angle) * speed,
+        vy: Math.sin(angle) * speed,
+        life: 1,
+        decay: Math.random() * 0.012 + 0.012,
+        color,
+        size: Math.random() * 2 + 1.5
+      });
+    }
+  }
+
+  const start = performance.now();
+  let lastLaunch = 0;
+  function frame(now) {
+    const elapsed = now - start;
+    // Fully clear each frame (canvas background is transparent), then redraw
+    // particles. This avoids a dark fill compounding over time and blacking
+    // out the page underneath.
+    ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
+
+    if (now - lastLaunch > 500 && elapsed < duration - 600) {
+      launchFirework();
+      lastLaunch = now;
+    }
+
+    particles = particles.filter((p) => p.life > 0);
+    particles.forEach((p) => {
+      p.x += p.vx;
+      p.y += p.vy;
+      p.vy += 0.025;
+      p.life -= p.decay;
+      ctx.globalAlpha = Math.max(p.life, 0);
+      ctx.fillStyle = p.color;
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+      ctx.fill();
+    });
+    ctx.globalAlpha = 1;
+
+    if (elapsed < duration) {
+      requestAnimationFrame(frame);
+    } else {
+      canvas.remove();
+    }
+  }
+  requestAnimationFrame(frame);
+  window.addEventListener('resize', resize);
+}
+
+/* ---------------- SCROLL REVEAL ---------------- */
+function initScrollReveal() {
+  const items = document.querySelectorAll('.reveal');
+  if (!items.length) return;
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('in-view');
+          observer.unobserve(entry.target);
+        }
+      });
+    },
+    { threshold: 0.15 }
+  );
+  items.forEach((item) => observer.observe(item));
+}
+</script>
+<script>
+  initParticles({ hearts: true, stars: true, balloons: false, density: 0.8 });
+
+  const display = document.getElementById('countdown-display');
+  const caption = document.getElementById('countdown-caption');
+  const continueBtn = document.getElementById('continue-btn');
+  const captions = ['Get ready...', 'Almost there...', 'Here it comes...'];
+  let count = 3;
+
+  function tick() {
+    display.textContent = count;
+    caption.textContent = captions[3 - count] || '';
+    display.classList.remove('pop');
+    void display.offsetWidth; // restart animation
+    display.classList.add('pop');
+
+    if (count > 1) {
+      count -= 1;
+      setTimeout(tick, 1100);
+    } else {
+      setTimeout(showFinalMessage, 1100);
+    }
+  }
+
+  function showFinalMessage() {
+    display.textContent = '🎉';
+    display.classList.add('pop');
+    caption.textContent = 'It\'s time!';
+    confettiBurst({ duration: 2600, count: 150 });
+    continueBtn.style.display = 'inline-flex';
+    continueBtn.classList.add('btn-reveal');
+  }
+
+  setTimeout(tick, 600);
+
+  continueBtn.addEventListener('click', () => goToPage('wish.html'));
+</script>
+</body>
+</html>
