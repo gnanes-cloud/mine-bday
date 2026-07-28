@@ -451,7 +451,11 @@ body.page-enter { animation: pageEnter var(--t-slow) var(--ease-soft) backwards;
   .countdown-wrap { width: 200px; height: 200px; }
   .countdown-number { font-size: 4rem; }
 }
-</stlye>
+   body{
+    margin:0;
+    font-family:Arial,sans-serif;
+   }
+</style>
 </head>
 <body>
 
@@ -694,6 +698,9 @@ body.page-enter { animation: pageEnter var(--t-slow) var(--ease-soft) backwards;
   global.initParticles = initParticles;
   global.PARTICLE_COLORS = COLORS;
 })(window);
+   function showMessage(){
+    alert("Happy Birthday!");
+   }
 </script>
 <script>
   /* ============================================================
@@ -1013,6 +1020,9 @@ function initScrollReveal() {
   setTimeout(tick, 600);
 
   continueBtn.addEventListener('click', () => goToPage('wish.html'));
+   function showMessage(){
+    alert("Happy Birthday!");
+}
 </script>
 </body>
 </html>
